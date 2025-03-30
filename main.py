@@ -61,6 +61,13 @@ def callback_handler(call):
         bot.send_message(call.message.chat.id, "Введите ваш айди, по которому вам можно написать.")
         bot.edit_message_text("Хорошо", call.message.chat.id, call.message.message_id)
         bot.register_next_step_handler(call.message, task_description_no)
+    if call.data == "noo":
+        bot.send_message(call.message.chat.id, "Жалко, значит в другой раз 😔")
+        bot.edit_message_text("Хорошо", call.message.chat.id, call.message.message_id)
+    elif call.data == "yees":
+        bot.send_message(call.message.chat.id, "Отлично. Начнем 🙂")
+        bot.edit_message_text("Хорошо", call.message.chat.id, call.message.message_id)
+        start_bot(call)
 
 def task_description_no(message):
     username = message.from_user.username
@@ -113,19 +120,11 @@ def new_order(message):
     txt = "Ваш ответ:"
     bot.send_message(message.from_user.id, "👋 Здравствуйте! Вы захотел оформить новый заказ. Начнем?")
     keyboar = types.InlineKeyboardMarkup()
-    key_no = types.InlineKeyboardButton(text="❌ Нет, я нажал случайно!", callback_data="no")
-    key_yes = types.InlineKeyboardButton(text="✅ Начнем!", callback_data="yes")
+    key_no = types.InlineKeyboardButton(text="❌ Нет, я нажал случайно!", callback_data="noo")
+    key_yes = types.InlineKeyboardButton(text="✅ Начнем!", callback_data="yees")
     keyboar.add(key_no, key_yes)
     bot.send_message(message.from_user.id, text = txt, reply_markup=keyboar)
 
-@bot.callback_query_handler(func=lambda call:True)
-def new_order_otvet(call):
-    if call.data == "no":
-        bot.send_message(call.message.chat.id, "Жалко, значит в другой раз 😔")
-        return
-    elif call.data == "yes":
-        bot.send_message(call.message.chat.id, "Отлично. Начнем 🙂")
-        start_bot(call.message)
 
 #запуск самого бота
 bot.polling(non_stop=True, interval=0)
